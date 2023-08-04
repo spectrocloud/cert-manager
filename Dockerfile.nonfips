@@ -1,0 +1,74 @@
+FROM gcr.io/spectro-images-public/golang:1.19-alpine as builder
+
+WORKDIR /
+COPY . .
+
+RUN apk add git gcc g++ make
+
+RUN go mod download
+
+# Build
+RUN go build -o _bin/controller cmd/controller/main.go
+
+RUN go build -o _bin/cainjector cmd/cainjector/main.go
+
+RUN go build -o _bin/webhook cmd/webhook/main.go
+
+RUN go build -o _bin/acmesolver cmd/acmesolver/main.go
+
+# webhook image
+#FROM gcr.io/distroless/static:nonroot as webhook
+FROM alpine:3.18.2 as webhook
+
+COPY --from=builder /_bin/webhook /app/cmd/webhook/webhook
+COPY --from=builder /_bin/scratch/cert-manager.license /licenses/LICENSE
+COPY --from=builder /_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
+
+RUN adduser -S -D -H -u 1001 -s /sbin/nologin appuser
+USER 1001
+
+ENTRYPOINT ["/app/cmd/webhook/webhook"]
+
+
+# cainjector image
+#FROM gcr.io/distroless/static:nonroot as cainjector
+FROM alpine:3.18.2 as cainjector
+
+COPY --from=builder /_bin/cainjector /app/cmd/cainjector/cainjector
+COPY --from=builder /_bin/scratch/cert-manager.license /licenses/LICENSE
+COPY --from=builder /_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
+
+RUN adduser -S -D -H -u 1001 -s /sbin/nologin appuser
+USER 1001
+
+ENTRYPOINT ["/app/cmd/cainjector/cainjector"]
+
+
+# acmesolver image
+#FROM gcr.io/distroless/static:nonroot as acmesolver
+FROM alpine:3.18.2 as acmesolver
+
+COPY --from=builder /_bin/acmesolver /app/cmd/acmesolver/acmesolver
+COPY --from=builder /_bin/scratch/cert-manager.license /licenses/LICENSE
+COPY --from=builder /_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
+
+RUN adduser -S -D -H -u 1001 -s /sbin/nologin appuser
+USER 1001
+
+ENTRYPOINT ["/app/cmd/acmesolver/acmesolver"]
+
+
+# controller image
+#FROM gcr.io/distroless/static:nonroot as controller
+FROM alpine:3.18.2 as controller
+
+COPY --from=builder /_bin/controller /app/cmd/controller/controller
+COPY --from=builder /_bin/scratch/cert-manager.license /licenses/LICENSE
+COPY --from=builder /_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
+
+RUN adduser -S -D -H -u 1001 -s /sbin/nologin appuser
+USER 1001
+
+ENTRYPOINT ["/app/cmd/controller/controller"]
+
+
