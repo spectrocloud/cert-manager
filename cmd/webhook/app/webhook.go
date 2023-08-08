@@ -130,6 +130,9 @@ func NewServerCommand(stopCh <-chan struct{}) *cobra.Command {
 		},
 	}
 
+	webhookConfig.TLSConfig.CipherSuites = options.GetDefaultTLSCipherSuits()
+	webhookConfig.TLSConfig.MinTLSVersion = options.GetDefaultTLSVersion()
+
 	webhookFlags.AddFlags(cleanFlagSet)
 	options.AddConfigFlags(cleanFlagSet, webhookConfig)
 	options.AddGlobalFlags(cleanFlagSet)
