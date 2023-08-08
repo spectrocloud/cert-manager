@@ -61,6 +61,21 @@ func NewWebhookConfiguration() (*config.WebhookConfiguration, error) {
 	return config, nil
 }
 
+// PEM-2613 Preferred list of Cipher Suit
+func GetDefaultTLSCipherSuits() []string {
+	return []string{
+		"TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+		"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+		"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+		"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+	}
+}
+
+// PEM-2613 Preferred version for TLS
+func GetDefaultTLSVersion() string {
+	return "VersionTLS12"
+}
+
 func AddConfigFlags(fs *pflag.FlagSet, c *config.WebhookConfiguration) {
 	fs.IntVar(c.SecurePort, "secure-port", *c.SecurePort, "port number to listen on for secure TLS connections")
 	fs.IntVar(c.HealthzPort, "healthz-port", *c.HealthzPort, "port number to listen on for insecure healthz connections")
