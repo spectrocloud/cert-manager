@@ -129,6 +129,7 @@ func Convert_webhook_FilesystemServingConfig_To_v1alpha1_FilesystemServingConfig
 func autoConvert_v1alpha1_TLSConfig_To_webhook_TLSConfig(in *v1alpha1.TLSConfig, out *webhook.TLSConfig, s conversion.Scope) error {
 	out.CipherSuites = *(*[]string)(unsafe.Pointer(&in.CipherSuites))
 	out.MinTLSVersion = in.MinTLSVersion
+	out.MaxTLSVersion = in.MaxTLSVersion
 	if err := Convert_v1alpha1_FilesystemServingConfig_To_webhook_FilesystemServingConfig(&in.Filesystem, &out.Filesystem, s); err != nil {
 		return err
 	}
@@ -146,6 +147,7 @@ func Convert_v1alpha1_TLSConfig_To_webhook_TLSConfig(in *v1alpha1.TLSConfig, out
 func autoConvert_webhook_TLSConfig_To_v1alpha1_TLSConfig(in *webhook.TLSConfig, out *v1alpha1.TLSConfig, s conversion.Scope) error {
 	out.CipherSuites = *(*[]string)(unsafe.Pointer(&in.CipherSuites))
 	out.MinTLSVersion = in.MinTLSVersion
+	out.MaxTLSVersion = in.MaxTLSVersion
 	if err := Convert_webhook_FilesystemServingConfig_To_v1alpha1_FilesystemServingConfig(&in.Filesystem, &out.Filesystem, s); err != nil {
 		return err
 	}

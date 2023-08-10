@@ -67,7 +67,10 @@ type TLSConfig struct {
 	// minTLSVersion is the minimum TLS version supported.
 	// Values are from tls package constants (https://golang.org/pkg/crypto/tls/#pkg-constants).
 	// If not specified, the default for the Go version will be used and may change over time.
-	MinTLSVersion string `json:"minTLSVersion,omitempty"`
+	MinTLSVersion string
+
+	// maxTLSVersion is the minimum TLS version supported.
+	MaxTLSVersion string
 
 	// Filesystem enables using a certificate and private key found on the local filesystem.
 	// These files will be periodically polled in case they have changed, and dynamically reloaded.

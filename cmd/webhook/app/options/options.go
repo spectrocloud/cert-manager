@@ -72,7 +72,7 @@ func GetDefaultTLSCipherSuits() []string {
 }
 
 // PEM-2613 Preferred version for TLS
-func GetDefaultTLSVersion() string {
+func GetTlsMinVersion() string {
 	return "VersionTLS12"
 }
 
@@ -103,6 +103,9 @@ func AddConfigFlags(fs *pflag.FlagSet, c *config.WebhookConfiguration) {
 	tlsPossibleVersions := cliflag.TLSPossibleVersions()
 	fs.StringVar(&c.TLSConfig.MinTLSVersion, "tls-min-version", c.TLSConfig.MinTLSVersion,
 		"Minimum TLS version supported. "+
+			"Possible values: "+strings.Join(tlsPossibleVersions, ", "))
+	fs.StringVar(&c.TLSConfig.MaxTLSVersion, "tls-max-version", c.TLSConfig.MaxTLSVersion,
+		"Maximum TLS version supported. "+
 			"Possible values: "+strings.Join(tlsPossibleVersions, ", "))
 	fs.Var(cliflag.NewMapStringBool(&c.FeatureGates), "feature-gates", "A set of key=value pairs that describe feature gates for alpha/experimental features. "+
 		"Options are:\n"+strings.Join(utilfeature.DefaultFeatureGate.KnownFeatures(), "\n"))
