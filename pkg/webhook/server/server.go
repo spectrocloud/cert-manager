@@ -111,6 +111,8 @@ type Server struct {
 	// Values are from tls package constants (https://golang.org/pkg/crypto/tls/#pkg-constants).
 	MinTLSVersion string
 
+	MaxTLSVersion string
+
 	listener net.Listener
 }
 
@@ -209,11 +211,16 @@ func (s *Server) Run(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
+		maxVersion, err := ciphers.TLSVersion(s.MaxTLSVersion)
+		if err != nil {
+			return err
+		}
 		listener = tls.NewListener(listener, &tls.Config{
 			GetCertificate:           s.CertificateSource.GetCertificate,
 			CipherSuites:             cipherSuites,
 			MinVersion:               minVersion,
 			PreferServerCipherSuites: true,
+			MaxVersion:               maxVersion,
 		})
 	} else {
 		s.log.V(logf.InfoLevel).Info("listening for insecure connections", "address", s.ListenAddr)

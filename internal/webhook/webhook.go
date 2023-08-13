@@ -79,6 +79,7 @@ func NewCertManagerWebhookServer(log logr.Logger, _ options.WebhookFlags, opts c
 		CertificateSource: buildCertificateSource(log, opts.TLSConfig, restcfg),
 		CipherSuites:      opts.TLSConfig.CipherSuites,
 		MinTLSVersion:     opts.TLSConfig.MinTLSVersion,
+		MaxTLSVersion:     opts.TLSConfig.MaxTLSVersion,
 		ValidationWebhook: admissionHandler,
 		MutationWebhook:   admissionHandler,
 		ConversionWebhook: conversionHook,
