@@ -1,4 +1,4 @@
-FROM gcr.io/spectro-images-public/golang:1.19-alpine as builder
+FROM gcr.io/spectro-images-public/golang:1.21-alpine as builder
 
 WORKDIR /
 COPY . .
@@ -8,13 +8,13 @@ RUN apk add git gcc g++ make
 RUN go mod download
 
 # Build
-RUN go build -o _bin/controller cmd/controller/main.go
+RUN CGO_ENABLED=0 go build -o _bin/controller cmd/controller/main.go
 
-RUN go build -o _bin/cainjector cmd/cainjector/main.go
+RUN CGO_ENABLED=0 go build -o _bin/cainjector cmd/cainjector/main.go
 
-RUN go build -o _bin/webhook cmd/webhook/main.go
+RUN CGO_ENABLED=0 go build -o _bin/webhook cmd/webhook/main.go
 
-RUN go build -o _bin/acmesolver cmd/acmesolver/main.go
+RUN CGO_ENABLED=0 go build -o _bin/acmesolver cmd/acmesolver/main.go
 
 # webhook image
 FROM gcr.io/distroless/static:nonroot as webhook
