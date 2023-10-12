@@ -1,6 +1,6 @@
 FROM gcr.io/spectro-images-public/golang:1.21-alpine as builder
 
-WORKDIR /
+WORKDIR /cert-manager
 COPY . .
 
 RUN apk add git gcc g++ make
@@ -8,24 +8,24 @@ RUN apk add git gcc g++ make
 RUN go mod download
 
 # Build
-RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto go build -ldflags "-linkmode=external -extldflags=-static" -o _bin/controller cmd/controller/main.go
+RUN go-build-fips.sh -o _bin/controller cmd/controller/main.go
 RUN go tool nm _bin/controller | grep FIPS
 
-RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto go build -ldflags "-linkmode=external -extldflags=-static" -o _bin/cainjector cmd/cainjector/main.go
+RUN go-build-fips.sh -o _bin/cainjector cmd/cainjector/main.go
 RUN go tool nm _bin/cainjector | grep FIPS
 
-RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto go build -ldflags "-linkmode=external -extldflags=-static" -o _bin/webhook cmd/webhook/main.go
+RUN go-build-fips.sh -o _bin/webhook cmd/webhook/main.go
 RUN go tool nm _bin/webhook | grep FIPS
 
-RUN CGO_ENABLED=1 GOEXPERIMENT=boringcrypto go build -ldflags "-linkmode=external -extldflags=-static" -o _bin/acmesolver cmd/acmesolver/main.go
+RUN go-build-fips.sh -o _bin/acmesolver cmd/acmesolver/main.go
 RUN go tool nm _bin/acmesolver | grep FIPS
 
 # webhook image
 FROM gcr.io/distroless/static:nonroot as webhook
 
-COPY --from=builder /_bin/webhook /app/cmd/webhook/webhook
-COPY --from=builder /_bin/scratch/cert-manager.license /licenses/LICENSE
-COPY --from=builder /_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
+COPY --from=builder /cert-manager/_bin/webhook /app/cmd/webhook/webhook
+COPY --from=builder /cert-manager/_bin/scratch/cert-manager.license /licenses/LICENSE
+COPY --from=builder /cert-manager/_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
 
 ENTRYPOINT ["/app/cmd/webhook/webhook"]
 
@@ -33,9 +33,9 @@ ENTRYPOINT ["/app/cmd/webhook/webhook"]
 # cainjector image
 FROM gcr.io/distroless/static:nonroot as cainjector
 
-COPY --from=builder /_bin/cainjector /app/cmd/cainjector/cainjector
-COPY --from=builder /_bin/scratch/cert-manager.license /licenses/LICENSE
-COPY --from=builder /_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
+COPY --from=builder /cert-manager/_bin/cainjector /app/cmd/cainjector/cainjector
+COPY --from=builder /cert-manager/_bin/scratch/cert-manager.license /licenses/LICENSE
+COPY --from=builder /cert-manager/_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
 
 ENTRYPOINT ["/app/cmd/cainjector/cainjector"]
 
@@ -43,9 +43,9 @@ ENTRYPOINT ["/app/cmd/cainjector/cainjector"]
 # acmesolver image
 FROM gcr.io/distroless/static:nonroot as acmesolver
 
-COPY --from=builder /_bin/acmesolver /app/cmd/acmesolver/acmesolver
-COPY --from=builder /_bin/scratch/cert-manager.license /licenses/LICENSE
-COPY --from=builder /_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
+COPY --from=builder /cert-manager/_bin/acmesolver /app/cmd/acmesolver/acmesolver
+COPY --from=builder /cert-manager/_bin/scratch/cert-manager.license /licenses/LICENSE
+COPY --from=builder /cert-manager/_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
 
 ENTRYPOINT ["/app/cmd/acmesolver/acmesolver"]
 
@@ -53,10 +53,8 @@ ENTRYPOINT ["/app/cmd/acmesolver/acmesolver"]
 # controller image
 FROM gcr.io/distroless/static:nonroot as controller
 
-COPY --from=builder /_bin/controller /app/cmd/controller/controller
-COPY --from=builder /_bin/scratch/cert-manager.license /licenses/LICENSE
-COPY --from=builder /_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
+COPY --from=builder /cert-manager/_bin/controller /app/cmd/controller/controller
+COPY --from=builder /cert-manager/_bin/scratch/cert-manager.license /licenses/LICENSE
+COPY --from=builder /cert-manager/_bin/scratch/cert-manager.licenses_notice /licenses/LICENSES
 
 ENTRYPOINT ["/app/cmd/controller/controller"]
-
-
