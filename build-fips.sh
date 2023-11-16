@@ -1,6 +1,7 @@
 #!/bin/sh
 
-VERSION="spectro-v1.11.0"
+SPECTRO_VERSION="4.1.0-dev"
+VERSION="v1.3.1-spectro-"
 IMG_REPO="gcr.io/spectro-images-public/release/jetstack/cert-manager"
 BUILDER_GOLANG_VERSION="1.21"
 
