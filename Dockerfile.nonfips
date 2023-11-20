@@ -5,6 +5,7 @@ FROM gcr.io/spectro-images-public/golang:${BUILDER_GOLANG_VERSION}-alpine as bui
 WORKDIR /cert-manager
 COPY . .
 
+RUN apk update && apk upgrade
 RUN apk add git gcc g++ make jq
 
 RUN go mod download
