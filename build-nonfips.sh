@@ -2,7 +2,11 @@
 
 SPECTRO_VERSION="4.1.0"
 VERSION="v1.3.1-spectro-"
-IMG_REPO="gcr.io/spectro-images-public/release/jetstack/cert-manager"
+if [[ $FIPS_REGISTRY ]]; then
+  IMG_REPO=$LEGACY_REGISTRY
+else
+  IMG_REPO="gcr.io/spectro-images-public/release-fips/jetstack/cert-manager"
+fi
 BUILDER_GOLANG_VERSION="1.21"
 
 ## dev repo ## 
