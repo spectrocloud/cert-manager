@@ -56,7 +56,7 @@ jobs:
         env:
           IMG_REPO: ${{ env.LEGACY_REGISTRY }}
         run: |
-          bash build-nonfips.sh
+          sh ./build-nonfips.sh
       -
         name: Build Image - FIPS Mode
         env:
@@ -64,7 +64,7 @@ jobs:
           IMG_REPO: ${{ env.FIPS_REGISTRY }}
           ALL_ARCH: amd64
         run: |
-          bash build-fips.sh
+          sh ./build-fips.sh
       -
         name: Create Release
         if: ${{ github.event.inputs.rel_type == 'release' }}
