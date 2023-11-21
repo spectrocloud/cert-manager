@@ -1,7 +1,11 @@
 #!/bin/sh
 
-VERSION="spectro-v1.11.0"
-IMG_REPO="gcr.io/spectro-images-public/release/jetstack/cert-manager"
+VERSION="v1.3.1-spectro-"
+if [[ $FIPS_REGISTRY ]]; then
+  IMG_REPO=$LEGACY_REGISTRY
+else
+  IMG_REPO="gcr.io/spectro-images-public/release-fips/jetstack/cert-manager"
+fi
 BUILDER_GOLANG_VERSION="1.21"
 
 ## dev repo ## 
@@ -14,17 +18,17 @@ docker buildx create --use
 
 docker buildx build --build-arg BUILDER_GOLANG_VERSION=${BUILDER_GOLANG_VERSION} --push \
 --platform linux/arm64,linux/amd64 \
---tag ${IMG_REPO}/cert-manager-controller:${VERSION} . -f ./Dockerfile.nonfips --target controller
+--tag ${IMG_REPO}/cert-manager-controller:${VERSION}$SPECTRO_VERSION . -f ./Dockerfile.nonfips --target controller
 
 docker buildx build --build-arg BUILDER_GOLANG_VERSION=${BUILDER_GOLANG_VERSION} --push \
 --platform linux/arm64,linux/amd64 \
---tag ${IMG_REPO}/cert-manager-webhook:${VERSION} . -f ./Dockerfile.nonfips --target webhook
+--tag ${IMG_REPO}/cert-manager-webhook:${VERSION}$SPECTRO_VERSION . -f ./Dockerfile.nonfips --target webhook
 
 docker buildx build --build-arg BUILDER_GOLANG_VERSION=${BUILDER_GOLANG_VERSION} --push \
 --platform linux/arm64,linux/amd64 \
---tag ${IMG_REPO}/cert-manager-cainjector:${VERSION} . -f ./Dockerfile.nonfips --target cainjector
+--tag ${IMG_REPO}/cert-manager-cainjector:${VERSION}$SPECTRO_VERSION . -f ./Dockerfile.nonfips --target cainjector
 
 docker buildx build --build-arg BUILDER_GOLANG_VERSION=${BUILDER_GOLANG_VERSION} --push \
 --platform linux/arm64,linux/amd64 \
---tag ${IMG_REPO}/cert-manager-acmesolver:${VERSION} . -f ./Dockerfile.nonfips --target acmesolver
+--tag ${IMG_REPO}/cert-manager-acmesolver:${VERSION}$SPECTRO_VERSION . -f ./Dockerfile.nonfips --target acmesolver
 
