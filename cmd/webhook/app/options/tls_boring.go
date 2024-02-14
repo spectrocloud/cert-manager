@@ -8,5 +8,5 @@ package options
 //}
 
 func GetTlsMaxVersion() string {
-	return "VersionTLS12"
+	return "VersionTLS13"
 }

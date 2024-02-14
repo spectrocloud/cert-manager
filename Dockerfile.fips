@@ -15,25 +15,25 @@ RUN make _bin/scratch/cert-manager.licenses_notice
 RUN make _bin/scratch/cert-manager.license
 
 # Build
-RUN go-build-fips.sh -o _bin/controller cmd/controller/main.go
+RUN go-build-fips.sh -o _bin/controller github.com/cert-manager/cert-manager/cmd/controller
 RUN go tool nm _bin/controller | grep FIPS
 
 RUN assert-fips.sh _bin/controller
 RUN scan-govulncheck.sh _bin/controller
 
-RUN go-build-fips.sh -o _bin/cainjector cmd/cainjector/main.go
+RUN go-build-fips.sh -o _bin/cainjector github.com/cert-manager/cert-manager/cmd/cainjector
 RUN go tool nm _bin/cainjector | grep FIPS
 
 RUN assert-fips.sh _bin/cainjector
 RUN scan-govulncheck.sh _bin/cainjector
 
-RUN go-build-fips.sh -o _bin/webhook cmd/webhook/main.go
+RUN go-build-fips.sh -o _bin/webhook github.com/cert-manager/cert-manager/cmd/webhook
 RUN go tool nm _bin/webhook | grep FIPS
 
 RUN assert-fips.sh _bin/webhook
 RUN scan-govulncheck.sh _bin/webhook
 
-RUN go-build-fips.sh -o _bin/acmesolver cmd/acmesolver/main.go
+RUN go-build-fips.sh -o _bin/acmesolver github.com/cert-manager/cert-manager/cmd/acmesolver
 RUN go tool nm _bin/acmesolver | grep FIPS
 
 RUN assert-fips.sh _bin/acmesolver

@@ -15,22 +15,22 @@ RUN make _bin/scratch/cert-manager.licenses_notice
 RUN make _bin/scratch/cert-manager.license
 
 # Build
-RUN go-build-static.sh -o _bin/controller cmd/controller/main.go
+RUN go-build-static.sh -o _bin/controller github.com/cert-manager/cert-manager/cmd/controller
 
 RUN assert-static.sh _bin/controller
 RUN scan-govulncheck.sh _bin/controller
 
-RUN go-build-static.sh -o _bin/cainjector cmd/cainjector/main.go
+RUN go-build-static.sh -o _bin/cainjector github.com/cert-manager/cert-manager/cmd/cainjector
 
 RUN assert-static.sh _bin/cainjector
 RUN scan-govulncheck.sh _bin/cainjector
 
-RUN go-build-static.sh -o _bin/webhook cmd/webhook/main.go
+RUN go-build-static.sh -o _bin/webhook github.com/cert-manager/cert-manager/cmd/webhook
 
 RUN assert-static.sh _bin/webhook
 RUN scan-govulncheck.sh _bin/webhook
 
-RUN go-build-static.sh -o _bin/acmesolver cmd/acmesolver/main.go
+RUN go-build-static.sh -o _bin/acmesolver github.com/cert-manager/cert-manager/cmd/acmesolver
 
 RUN assert-static.sh _bin/acmesolver
 RUN scan-govulncheck.sh _bin/acmesolver
