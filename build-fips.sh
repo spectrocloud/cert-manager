@@ -6,7 +6,7 @@ if [[ $FIPS_REGISTRY ]]; then
 else
   IMG_REPO="gcr.io/spectro-images-public/release-fips/jetstack/cert-manager"
 fi
-BUILDER_GOLANG_VERSION="1.21"
+BUILDER_GOLANG_VERSION="1.22"
 
 ## dev repo ## 
 #IMG_REPO="gcr.io/spectro-dev-public/${USER}/cert-manager"
