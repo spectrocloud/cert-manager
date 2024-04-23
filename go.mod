@@ -1,6 +1,6 @@
 module github.com/cert-manager/cert-manager
 
-go 1.21
+go 1.22
 
 require (
 	github.com/Azure/azure-sdk-for-go v66.0.0+incompatible
