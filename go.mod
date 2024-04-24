@@ -2,6 +2,8 @@ module github.com/cert-manager/cert-manager
 
 go 1.22
 
+toolchain go1.22.2
+
 require (
 	github.com/Azure/azure-sdk-for-go v66.0.0+incompatible
 	github.com/Azure/go-autorest/autorest v0.11.28
